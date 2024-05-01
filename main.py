@@ -18,7 +18,7 @@ PROXY_URL = os.getenv('PROXY_URL')
 
 user_history = {}
 bot = discord.Bot(intents=discord.Intents.default())
-
+system_prompt = "You are a discord bot named AssistMatrix. You can generate images when a user uses the ```/imagine``` command, otherwise you will just respond normally when pinged."
 
 
 async def meta(message, bot):
@@ -65,7 +65,7 @@ async def on_message(message):
                 await message.add_reaction("🕥")
                 msg_content = await meta(message, bot)
                 async with aiohttp.ClientSession() as session:
-                    async with session.post(f"{PROXY_URL}/ask", headers={"Content-Type":"application/json"}, json={"messages":[{"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
+                    async with session.post(f"{PROXY_URL}/ask", headers={"Content-Type":"application/json"}, json={"messages":[{"role":"system","content":system_prompt}, {"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
                     	response = await response.json()
                     	for substring in ["@everyone", "@here"]:
                     		response["response"] = response["response"].replace(substring, f" ``` {substring} ``` ")

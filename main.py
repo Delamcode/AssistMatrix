@@ -68,7 +68,7 @@ async def on_message(message):
                     async with session.post(f"{PROXY_URL}/ask", headers={"Content-Type":"application/json"}, json={"messages":[{"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
                     	response = await response.json()
                     	for substring in ["@everyone", "@here"]:
-                    		response["response"] = response["response"].replace(substring, f" ``` {a} ``` ")
+                    		response["response"] = response["response"].replace(substring, f" ``` {substring} ``` ")
                 await message.reply(response["response"])
                 await message.remove_reaction("🕥", bot.user)
                 await message.add_reaction("😸")

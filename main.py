@@ -22,6 +22,7 @@ user_history = {}
 bot = discord.Bot(intents=discord.Intents.default())
 system_prompt = "You are a discord bot named AssistMatrix. You can generate images when a user uses the ```/imagine``` command, otherwise you will just respond normally when pinged."
 intro_message = 'Introduce yourself as AssistMatrix, a discord bot. Do not make stuff up about your capabillites as a discord bot. You are able to respond to messages after being pinged, or generate images with the ```/imagine``` command.'
+last_command_time = {"chat":{}, "imagine":{}}
 
 
 async def meta(message, bot):
@@ -56,8 +57,6 @@ async def on_ready():
     print(f"Logged in as {bot.user.name}")
     await bot.change_presence(activity=discord.Game(name="Hello There"))
 
-
-last_command_time = {}
 # --------- TEXT MODELS ---------
 @bot.event
 async def on_message(message):
@@ -90,7 +89,6 @@ async def on_message(message):
             await message.remove_reaction("🕥", bot.user)
             await message.add_reaction("⚠")
 
-last_command_time = {}
 # --------- IMAGINE---------
 @bot.slash_command(description="Generate images")
 @option(name="prompt", required=True, description="Prompt to generate")

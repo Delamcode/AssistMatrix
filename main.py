@@ -16,7 +16,8 @@ version = "v1"
 # --------- TOKENS ---------
 bot_token = os.environ['BOT_KEY']
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
-PROXY_URL = os.getenv('PROXY_URL')
+PROXY_URL_CHAT = os.getenv('PROXY_URL_CHAT')
+PROXY_URL_IMAGE = os.getenv('PROXY_URL_IMAGE')
 
 
 user_history = {}
@@ -77,7 +78,7 @@ async def on_message(message):
                 await message.add_reaction("🕥")
                 msg_content = await meta(message, bot)
                 async with aiohttp.ClientSession() as session:
-                    async with session.post(f"{PROXY_URL}/ask", headers={"Content-Type":"application/json"}, json={"messages":[{"role":"system","content":system_prompt}, {"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
+                    async with session.post(f"{PROXY_URL_CHAT}/ask", headers={"Content-Type":"application/json"}, json={"messages":[{"role":"system","content":system_prompt}, {"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
                         response = await response.json()
                         for substring in ["@everyone", "@here"]:
                             response["response"] = response["response"].replace(substring, f" ``` {substring} ``` ")
@@ -110,7 +111,7 @@ async def imagine(
         await ctx.respond(f"Generating:\n> {prompt}", ephemeral=True)
         encoded_prompt = urllib.parse.quote(prompt)
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"{PROXY_URL}/generate?prompt={encoded_prompt}", headers={"Content-Type":"application/json"}) as response:
+            async with session.get(f"{PROXY_URL_IMAGE}/generate?prompt={encoded_prompt}", headers={"Content-Type":"application/json"}) as response:
                 output = await response.json()
                 if validators.url(output["response"]):
                     try:

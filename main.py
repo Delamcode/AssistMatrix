@@ -61,6 +61,14 @@ async def on_message(message):
     if bot.user in message.mentions and '@everyone' not in message.content and '@here' not in message.content:
         time = datetime.datetime.now().time().strftime("%H:%M:%S")
         print(time, message.author.id, message.author, "Message")
+        user_id = str(message.author.id)
+        if user_id in last_command_time["chat"]:
+            time_difference = datetime.now() - last_command_time["chat"][user_id]
+            if time_difference < timedelta(minutes=2):
+                await message.reply(f"Please wait a minute between each message.")
+                await message.remove_reaction("🕥", bot.user)
+                await message.add_reaction("⛔")
+        last_command_time["chat"][user_id] = datetime.now()
         try:
             async with message.channel.typing():
                 await message.add_reaction("🕥")
@@ -76,5 +84,23 @@ async def on_message(message):
         except Exception as error:
             await message.reply(f"An error occurred: {error}.")
             traceback.print_exc()
+            await message.remove_reaction("🕥", bot.user)
+            await message.add_reaction("⚠")
+
+last_command_time = {}
+# --------- IMAGINE---------
+@bot.slash_command(description="Generate images")
+@option(name="prompt", required=True, description="Prompt to generate")
+async def imagine(
+    ctx: discord.ApplicationContext,
+    prompt: str,
+):
+    user_id = str(ctx.user.id)
+    if user_id in last_command_time["imagine"]:
+        time_difference = datetime.now() - last_command_time["imagine"][user_id]
+        if time_difference < timedelta(minutes=2):
+            await ctx.respond(f"Please wait for 2 minutes between each use of the 'imagine' command.", ephemeral=True)
+            return
+    last_command_time["imagine"][user_id] = datetime.now()
 
 bot.run(bot_token)

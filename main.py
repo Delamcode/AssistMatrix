@@ -76,9 +76,9 @@ async def on_message(message):
                 msg_content = await meta(message, bot)
                 async with aiohttp.ClientSession() as session:
                     async with session.post(f"{PROXY_URL}/ask", headers={"Content-Type":"application/json"}, json={"messages":[{"role":"system","content":system_prompt}, {"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
-                    	response = await response.json()
-                    	for substring in ["@everyone", "@here"]:
-                    		response["response"] = response["response"].replace(substring, f" ``` {substring} ``` ")
+                        response = await response.json()
+                        for substring in ["@everyone", "@here"]:
+                            response["response"] = response["response"].replace(substring, f" ``` {substring} ``` ")
                 await message.reply(response["response"])
                 await message.remove_reaction("🕥", bot.user)
                 await message.add_reaction("😸")
@@ -110,23 +110,23 @@ async def imagine(
         async with aiohttp.ClientSession() as session:
             async with session.post(f"{PROXY_URL}/ask", headers={"Content-Type":"application/json"}, json={"messages":[{"role":"system","content":system_prompt}, {"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
                 output = await response.json()
-				if validators.url(output["response"]):
-    				try:
-            			async with aiohttp.ClientSession() as session:
-                			async with session.get(output["reponse"]) as response_content:
-                    			response.raise_for_status()
-                    			image_bytes = io.BytesIO(response.content)
-        			except aiohttp.ClientError as e:
-            			ctx.respond(f"Error fetching URL {output["response"]}: {str(e)}", ephemeral)
-        			except Exception as e:
-            			print(f"An error occurred: {str(e)}", ephemeral)
-    			else:
-        			ctx.respond(response_content, ephemeral)
+                if validators.url(output["response"]):
+                    try:
+                        async with aiohttp.ClientSession() as session:
+                            async with session.get(output["reponse"]) as response_content:
+                                response.raise_for_status()
+                                image_bytes = io.BytesIO(response.content)
+                    except aiohttp.ClientError as e:
+                        ctx.respond(f"Error fetching URL {output["response"]}: {str(e)}", ephemeral)
+                    except Exception as e:
+                        print(f"An error occurred: {str(e)}", ephemeral)
+                else:
+                    ctx.respond(response_content, ephemeral)
         final = discord.File(image_bytes, f'image.png')
         await ctx.respond(f"{ctx.user.mention} requested an image:\n**{prompt}**", files=final)
     except Exception as error:
         await message.reply(f"An error occurred: {error}.", ephemeral)
         traceback.print_exc()
 for substring in ["@everyone", "@here"]:
-                    		response["response"] = response["response"].replace(substring, f" ``` {substring} ``` ")
+                            response["response"] = response["response"].replace(substring, f" ``` {substring} ``` ")
 bot.run(bot_token)

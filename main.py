@@ -63,10 +63,10 @@ async def on_ready():
 # --------- TEXT MODELS ---------
 @bot.event
 async def on_message(message):
+    user_id = str(message.author.id)
     if bot.user in message.mentions and '@everyone' not in message.content and '@here' not in message.content:
         time = datetime.now().time().strftime("%H:%M:%S")
         print(time, user_id, message.author, "Message")
-        user_id = str(message.author.id)
         if user_id in last_command_time["chat"]:
             time_difference = datetime.now() - last_command_time["chat"][user_id]
             if time_difference < timedelta(minutes=2):

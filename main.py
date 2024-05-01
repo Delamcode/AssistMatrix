@@ -7,6 +7,7 @@ import os
 import traceback
 from datetime import datetime, timedelta
 import validators
+import urllib.parse
 
 load_dotenv()
 

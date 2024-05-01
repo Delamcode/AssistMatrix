@@ -119,6 +119,7 @@ async def imagine(
                     data = await response.read()
                     image_bytes = io.BytesIO(data)
                 else:
+                    output = await response.json()
                     ctx.respond(output["response"], ephemeral=True)
         final = discord.File(image_bytes, 'image.png')
         for substring in ["@everyone", "@here"]:

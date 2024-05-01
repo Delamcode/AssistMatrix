@@ -23,8 +23,8 @@ PROXY_URL_IMAGE = os.getenv('PROXY_URL_IMAGE')
 
 user_history = {}
 bot = discord.Bot(intents=discord.Intents.default())
-system_prompt = "You are a discord bot named AssistMatrix. You can generate images when a user uses the ```/imagine``` command, otherwise you will just respond normally when pinged. You are based on GPT-4-Turbo for text generation, and Dalle-3 for image generation. If a user asks you to generate an image, remind them to use the ```/imagine``` command. If you recive a ```/imagine``` command, remind the user to use the commands built into discord."
-intro_message = 'Introduce yourself as AssistMatrix, a discord bot. Do not make stuff up about your capabillites as a discord bot. You are able to respond to messages after being pinged, or generate images with the ```/imagine``` command.'
+system_prompt = "You are a discord bot named AssistMatrix. You can generate images when a user uses the `/imagine` command, otherwise you will just respond normally when pinged. You are based on GPT-4-Turbo for text generation, and Dalle-3 for image generation. If a user asks you to generate an image, remind them to use the `/imagine` command. If you recive a `/imagine` command, remind the user to use the commands built into discord."
+intro_message = 'Introduce yourself as AssistMatrix, a discord bot. Do not make stuff up about your capabillites as a discord bot. You are able to respond to messages after being pinged, or generate images with the `/imagine` command.'
 last_command_time = {"chat":{}, "imagine":{}}
 
 
@@ -83,7 +83,7 @@ async def on_message(message):
                     async with session.post(f"{PROXY_URL_CHAT}/ask", headers={"Content-Type":"application/json"}, json={"messages":[{"role":"system","content":system_prompt}, {"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
                         response = await response.json()
                         for substring in ["@everyone", "@here"]:
-                            response["response"] = response["response"].replace(substring, f" ``` {substring} ``` ")
+                            response["response"] = response["response"].replace(substring, f" ` {substring} ` ")
                 await message.reply(response["response"])
                 await message.remove_reaction("🕥", bot.user)
                 await message.add_reaction("😸")
@@ -122,7 +122,7 @@ async def imagine(
                     ctx.respond(output["response"], ephemeral=True)
         final = discord.File(image_bytes, 'image.png')
         for substring in ["@everyone", "@here"]:
-            prompt = prompt.replace(substring, f" ``` {substring} ``` ")
+            prompt = prompt.replace(substring, f" ` {substring} ` ")
         await ctx.respond(f"{ctx.user.mention} requested an image:\n**{prompt}**", file=final)
     except Exception as error:
         await ctx.respond(f"An error occurred: {error}.", ephemeral=True)

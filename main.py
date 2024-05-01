@@ -83,7 +83,7 @@ async def on_message(message):
                     async with session.post(f"{PROXY_URL_CHAT}/ask", headers={"Content-Type":"application/json"}, json={"messages":[{"role":"system","content":system_prompt}, {"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
                         response = await response.json()
                         for substring in ["@everyone", "@here"]:
-                            response["response"] = response["response"].replace(substring, f" ` {substring} ` ")
+                            response["response"] = response["response"].replace(substring, f" `{substring}` ")
                 await message.reply(response["response"])
                 await message.remove_reaction("🕥", bot.user)
                 await message.add_reaction("😸")
@@ -122,7 +122,7 @@ async def imagine(
                     ctx.respond(output["response"], ephemeral=True)
         final = discord.File(image_bytes, 'image.png')
         for substring in ["@everyone", "@here"]:
-            prompt = prompt.replace(substring, f" ` {substring} ` ")
+            prompt = prompt.replace(substring, f" `{substring}` ")
         await ctx.respond(f"{ctx.user.mention} requested an image:\n**{prompt}**", file=final)
     except Exception as error:
         await ctx.respond(f"An error occurred: {error}.", ephemeral=True)

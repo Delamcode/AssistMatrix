@@ -124,7 +124,7 @@ async def imagine(
                     except Exception as e:
                         print(f"An error occurred: {str(e)}", ephemeral=True)
                 else:
-                    ctx.respond(response_content, ephemeral=True)
+                    ctx.respond(output["response"], ephemeral=True)
         final = discord.File(image_bytes, f'image.png')
         for substring in ["@everyone", "@here"]:
             prompt = prompt.replace(substring, f" ``` {substring} ``` ")

@@ -8,6 +8,7 @@ import traceback
 from datetime import datetime, timedelta
 import validators
 import urllib.parse
+import io
 
 load_dotenv()
 
@@ -112,17 +113,10 @@ async def imagine(
         encoded_prompt = urllib.parse.quote(prompt)
         async with aiohttp.ClientSession() as session:
             async with session.get(f"{PROXY_URL_IMAGE}/generate?prompt={encoded_prompt}", headers={"Content-Type":"application/json"}) as response:
-                output = await response.json()
-                if validators.url(output["response"]):
-                    try:
-                        async with aiohttp.ClientSession() as session:
-                            async with session.get(output["reponse"]) as response_content:
-                                response.raise_for_status()
-                                image_bytes = io.BytesIO(response.content)
-                    except aiohttp.ClientError as e:
-                        ctx.respond(f"Error fetching URL {output['response']}: {str(e)}", ephemeral=True)
-                    except Exception as e:
-                        print(f"An error occurred: {str(e)}", ephemeral=True)
+                content_type = response.headers.get('Content-Type', '')
+                if 'image' in content_type:
+                    data = await response.read()
+                    image_bytes = io.BytesIO(response.content)
                 else:
                     ctx.respond(output["response"], ephemeral=True)
         final = discord.File(image_bytes, f'image.png')

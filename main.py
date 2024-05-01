@@ -116,7 +116,7 @@ async def imagine(
                 content_type = response.headers.get('Content-Type', '')
                 if 'image' in content_type:
                     data = await response.read()
-                    image_bytes = io.BytesIO(response.content)
+                    image_bytes = io.BytesIO(data)
                 else:
                     ctx.respond(output["response"], ephemeral=True)
         final = discord.File(image_bytes, f'image.png')

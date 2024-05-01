@@ -65,7 +65,7 @@ async def on_message(message):
                 await message.add_reaction("🕥")
                 msg_content = await meta(message, bot)
                 async with aiohttp.ClientSession() as session:
-                    async with session.post(PROXY_URL, headers={"Content-Type":"application/json"}, json={"messages":[{"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
+                    async with session.post(f"{PROXY_URL}/ask", headers={"Content-Type":"application/json"}, json={"messages":[{"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
                     	response = await response.json()
                     	if ["@everyone", "@here"] in response["response"]:
                     		response["response"].replace(["@everyone", "@here"], f" ``` {a} ``` ")

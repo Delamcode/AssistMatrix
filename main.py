@@ -107,8 +107,9 @@ async def imagine(
     last_command_time["imagine"][user_id] = datetime.now()
     try:
         await ctx.respond(f"Generating:\n> {prompt}", ephemeral=True)
+        encoded_prompt = urllib.parse.quote(prompt)
         async with aiohttp.ClientSession() as session:
-            async with session.post(f"{PROXY_URL}/ask", headers={"Content-Type":"application/json"}, json={"messages":[{"role":"system","content":system_prompt}, {"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
+            async with session.get(f"{PROXY_URL}/generate?prompt={encoded_prompt}", headers={"Content-Type":"application/json"}) as response:
                 output = await response.json()
                 if validators.url(output["response"]):
                     try:
@@ -127,6 +128,6 @@ async def imagine(
             prompt = prompt.replace(substring, f" ``` {substring} ``` ")
         await ctx.respond(f"{ctx.user.mention} requested an image:\n**{prompt}**", files=final)
     except Exception as error:
-        await message.reply(f"An error occurred: {error}.", ephemeral)
+        await ctx.respond(f"An error occurred: {error}.", ephemeral)
         traceback.print_exc()
 bot.run(bot_token)

@@ -23,7 +23,7 @@ PROXY_URL_IMAGE = os.getenv('PROXY_URL_IMAGE')
 
 user_history = {}
 bot = discord.Bot(intents=discord.Intents.default())
-system_prompt = "You are a discord bot named AssistMatrix. You can generate images when a user uses the ```/imagine``` command, otherwise you will just respond normally when pinged. You are based on GPT-4-Turbo for text generation, and Dalle-3 for image generation."
+system_prompt = "You are a discord bot named AssistMatrix. You can generate images when a user uses the ```/imagine``` command, otherwise you will just respond normally when pinged. You are based on GPT-4-Turbo for text generation, and Dalle-3 for image generation. If a user asks you to generate an image, remind them to use the ```/imagine``` command. If you recive a ```/imagine``` command, remind the user to use the commands built into discord."
 intro_message = 'Introduce yourself as AssistMatrix, a discord bot. Do not make stuff up about your capabillites as a discord bot. You are able to respond to messages after being pinged, or generate images with the ```/imagine``` command.'
 last_command_time = {"chat":{}, "imagine":{}}
 

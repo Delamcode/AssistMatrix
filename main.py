@@ -56,6 +56,7 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name="Hello There"))
 
 
+last_command_time = {}
 # --------- TEXT MODELS ---------
 @bot.event
 async def on_message(message):

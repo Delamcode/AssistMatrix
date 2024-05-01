@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 import traceback
 import datetime
+import validators
 
 load_dotenv()
 
@@ -60,7 +61,7 @@ async def on_ready():
 async def on_message(message):
     if bot.user in message.mentions and '@everyone' not in message.content and '@here' not in message.content:
         time = datetime.datetime.now().time().strftime("%H:%M:%S")
-        print(time, message.author.id, message.author, "Message")
+        print(time, user_id, message.author, "Message")
         user_id = str(message.author.id)
         if user_id in last_command_time["chat"]:
             time_difference = datetime.now() - last_command_time["chat"][user_id]
@@ -96,11 +97,36 @@ async def imagine(
     prompt: str,
 ):
     user_id = str(ctx.user.id)
+    time = datetime.datetime.now().time().strftime("%H:%M:%S")
+    print(time, user_id, ctx.user, "Image")
     if user_id in last_command_time["imagine"]:
         time_difference = datetime.now() - last_command_time["imagine"][user_id]
         if time_difference < timedelta(minutes=2):
             await ctx.respond(f"Please wait for 2 minutes between each use of the 'imagine' command.", ephemeral=True)
             return
     last_command_time["imagine"][user_id] = datetime.now()
-
+    try:
+        await ctx.respond(f"Generating:\n> {prompt}", ephemeral=True)
+        async with aiohttp.ClientSession() as session:
+            async with session.post(f"{PROXY_URL}/ask", headers={"Content-Type":"application/json"}, json={"messages":[{"role":"system","content":system_prompt}, {"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
+                output = await response.json()
+				if validators.url(output["response"]):
+    				try:
+            			async with aiohttp.ClientSession() as session:
+                			async with session.get(output["reponse"]) as response_content:
+                    			response.raise_for_status()
+                    			image_bytes = io.BytesIO(response.content)
+        			except aiohttp.ClientError as e:
+            			ctx.respond(f"Error fetching URL {output["response"]}: {str(e)}", ephemeral)
+        			except Exception as e:
+            			print(f"An error occurred: {str(e)}", ephemeral)
+    			else:
+        			ctx.respond(response_content, ephemeral)
+        final = discord.File(image_bytes, f'image.png')
+        await ctx.respond(f"{ctx.user.mention} requested an image:\n**{prompt}**", files=final)
+    except Exception as error:
+        await message.reply(f"An error occurred: {error}.", ephemeral)
+        traceback.print_exc()
+for substring in ["@everyone", "@here"]:
+                    		response["response"] = response["response"].replace(substring, f" ``` {substring} ``` ")
 bot.run(bot_token)

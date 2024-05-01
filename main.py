@@ -123,10 +123,10 @@ async def imagine(
                 else:
                     ctx.respond(response_content, ephemeral)
         final = discord.File(image_bytes, f'image.png')
+        for substring in ["@everyone", "@here"]:
+            prompt = prompt.replace(substring, f" ``` {substring} ``` ")
         await ctx.respond(f"{ctx.user.mention} requested an image:\n**{prompt}**", files=final)
     except Exception as error:
         await message.reply(f"An error occurred: {error}.", ephemeral)
         traceback.print_exc()
-for substring in ["@everyone", "@here"]:
-                            response["response"] = response["response"].replace(substring, f" ``` {substring} ``` ")
 bot.run(bot_token)

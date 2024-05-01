@@ -67,7 +67,7 @@ async def on_message(message):
                 async with aiohttp.ClientSession() as session:
                     async with session.post(url, headers={"Content-Type":"application/json"}, json={"messages":[{"role":"user","content":f"{msg_content}"}],"model":"gpt-4-turbo-preview"}) as response:
                     	response = response.json()
-                await message.reply(f"{response["response"]}")
+                await message.reply(response["response"])
                 await message.remove_reaction("🕥", bot.user)
                 await message.add_reaction("😸")
         except Exception as error:

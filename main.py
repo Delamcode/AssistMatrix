@@ -119,16 +119,16 @@ async def imagine(
                                 response.raise_for_status()
                                 image_bytes = io.BytesIO(response.content)
                     except aiohttp.ClientError as e:
-                        ctx.respond(f"Error fetching URL {output['response']}: {str(e)}", ephemeral)
+                        ctx.respond(f"Error fetching URL {output['response']}: {str(e)}", ephemeral=True)
                     except Exception as e:
-                        print(f"An error occurred: {str(e)}", ephemeral)
+                        print(f"An error occurred: {str(e)}", ephemeral=True)
                 else:
-                    ctx.respond(response_content, ephemeral)
+                    ctx.respond(response_content, ephemeral=True)
         final = discord.File(image_bytes, f'image.png')
         for substring in ["@everyone", "@here"]:
             prompt = prompt.replace(substring, f" ``` {substring} ``` ")
         await ctx.respond(f"{ctx.user.mention} requested an image:\n**{prompt}**", files=final)
     except Exception as error:
-        await ctx.respond(f"An error occurred: {error}.", ephemeral)
+        await ctx.respond(f"An error occurred: {error}.", ephemeral=True)
         traceback.print_exc()
 bot.run(bot_token)

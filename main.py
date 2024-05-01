@@ -73,6 +73,7 @@ async def on_message(message):
                 await message.reply(f"Please wait a minute between each message.")
                 await message.remove_reaction("🕥", bot.user)
                 await message.add_reaction("⛔")
+                return
         last_command_time["chat"][user_id] = datetime.now()
         try:
             async with message.channel.typing():

@@ -118,7 +118,7 @@ async def imagine(
                                 response.raise_for_status()
                                 image_bytes = io.BytesIO(response.content)
                     except aiohttp.ClientError as e:
-                        ctx.respond(f"Error fetching URL {output["response"]}: {str(e)}", ephemeral)
+                        ctx.respond(f"Error fetching URL {output['response']}: {str(e)}", ephemeral)
                     except Exception as e:
                         print(f"An error occurred: {str(e)}", ephemeral)
                 else:

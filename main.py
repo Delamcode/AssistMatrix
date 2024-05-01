@@ -5,7 +5,7 @@ import json
 from dotenv import load_dotenv
 import os
 import traceback
-import datetime
+from datetime import datetime, timedelta
 import validators
 
 load_dotenv()
@@ -61,7 +61,7 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     if bot.user in message.mentions and '@everyone' not in message.content and '@here' not in message.content:
-        time = datetime.datetime.now().time().strftime("%H:%M:%S")
+        time = datetime.now().time().strftime("%H:%M:%S")
         print(time, user_id, message.author, "Message")
         user_id = str(message.author.id)
         if user_id in last_command_time["chat"]:
@@ -97,7 +97,7 @@ async def imagine(
     prompt: str,
 ):
     user_id = str(ctx.user.id)
-    time = datetime.datetime.now().time().strftime("%H:%M:%S")
+    time = datetime.now().time().strftime("%H:%M:%S")
     print(time, user_id, ctx.user, "Image")
     if user_id in last_command_time["imagine"]:
         time_difference = datetime.now() - last_command_time["imagine"][user_id]

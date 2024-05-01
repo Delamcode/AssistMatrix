@@ -19,6 +19,7 @@ PROXY_URL = os.getenv('PROXY_URL')
 user_history = {}
 bot = discord.Bot(intents=discord.Intents.default())
 system_prompt = "You are a discord bot named AssistMatrix. You can generate images when a user uses the ```/imagine``` command, otherwise you will just respond normally when pinged."
+intro_message = 'Introduce yourself as AssistMatrix, a discord bot. Do not make stuff up about your capabillites as a discord bot. You are able to respond to messages after being pinged, or generate images with the ```/imagine``` command.'
 
 
 async def meta(message, bot):
@@ -40,7 +41,7 @@ async def meta(message, bot):
         attached_all = ''.join(attachments)
     mention = f'<@{bot.user.id}>'
     if message.content == mention:
-        msg_content = 'Introduce yourself as AssistMatrix, a discord bot. Do not make stuff up about your capabillites as a discord bot. You are able to respond to messages after being pinged, or generate images with the ```/imagine``` command.'
+        msg_content = intro_message
     else:
         msg_content = message.content.replace(mention, '').strip()
     if attached_all:

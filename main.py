@@ -69,7 +69,7 @@ async def on_message(message):
         print(time, user_id, message.author, "Message")
         if user_id in last_command_time["chat"]:
             time_difference = datetime.now() - last_command_time["chat"][user_id]
-            if time_difference < timedelta(minutes=2):
+            if time_difference < timedelta(minutes=1):
                 await message.reply(f"Please wait a minute between each message.")
                 await message.remove_reaction("🕥", bot.user)
                 await message.add_reaction("⛔")

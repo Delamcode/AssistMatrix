@@ -120,7 +120,8 @@ async def imagine(
                     image_bytes = io.BytesIO(data)
                 else:
                     output = await response.json()
-                    ctx.respond(output["response"], ephemeral=True)
+                    await ctx.respond(output["response"], ephemeral=True)
+                    return
         final = discord.File(image_bytes, 'image.png')
         for substring in ["@everyone", "@here"]:
             prompt = prompt.replace(substring, f" `{substring}` ")
